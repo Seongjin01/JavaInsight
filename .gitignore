@@ -1,42 +1,58 @@
 # Java (Maven/Gradle)
 target/
-build/
+java-analyzer/target/
+java-analyzer/build/
+java-analyzer/bin/
 *.jar
 *.war
 *.ear
 *.class
+
+# IDE - IntelliJ
 .idea/
 *.iml
 *.ipr
 *.iws
+out/
+
+# IDE - Eclipse
 .classpath
 .project
 .settings/
-bin/
+bin/ # Eclipse output directory
+
+# IDE - VSCode
+.vscode/
 
 # Node.js (React/Express)
 node_modules/
-build/ # React 앱 빌드 결과물 (web-app/build)
-dist/  # 다른 빌드 결과물 폴더명 예시
-coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# web-app specific Node.js (React) ignores
+web-app/node_modules/
+web-app/build/
+web-app/.env
+web-app/.env.local
+web-app/.env.development.local
+web-app/.env.test.local
+web-app/.env.production.local
+web-app/coverage/
+
+# Temporary/Generated files from web-app server or worker
+web-app/uploads/
+web-app/analysis_results/
+web-app/*.log
+
+# Operating System generated files
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Log files
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-uploads/ # 사용자가 업로드한 ZIP 파일 (서버 임시 저장)
-analysis_results/ # 분석 결과 JSON 파일 (서버 임시 저장)
-
-# IDE 및 OS 생성 파일
-.vscode/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-Thumbs.db
-desktop.ini
