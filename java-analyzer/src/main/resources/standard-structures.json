@@ -1,22 +1,379 @@
 [
+
   {
-    "className": "java.util.ArrayList",
-    "extendsName": "java.util.AbstractList",
-    "implementsList": ["java.util.List", "java.util.RandomAccess", "java.lang.Cloneable", "java.io.Serializable"],
-    "description": "Resizable-array implementation of the List interface. Implements all optional list operations, and permits all elements, including null.",
-    "type": "COLLECTION"
+    "className": "java.lang.Object",
+    "description": "모든 Java 클래스의 최상위 부모 클래스입니다. 객체의 기본적인 메소드(equals, hashCode, toString 등)를 제공합니다.",
+    "type": "CORE_CLASS",
+    "commonMethods": ["equals", "hashCode", "toString", "getClass", "notify", "notifyAll", "wait"]
   },
   {
-    "className": "java.util.HashMap",
-    "extendsName": "java.util.AbstractMap",
-    "implementsList": ["java.util.Map", "java.lang.Cloneable", "java.io.Serializable"],
-    "description": "Hash table based implementation of the Map interface. This implementation provides all of the optional map operations, and permits null values and the null key.",
-    "type": "COLLECTION"
+    "className": "java.lang.String",
+    "implementsList": ["java.io.Serializable", "java.lang.Comparable<String>", "java.lang.CharSequence"],
+    "description": "문자열을 나타내는 불변(immutable) 클래스입니다. 문자열 리터럴은 String 객체로 구현됩니다.",
+    "type": "CORE_CLASS",
+    "commonMethods": ["length", "charAt", "substring", "equals", "equalsIgnoreCase", "startsWith", "endsWith", "indexOf", "lastIndexOf", "replace", "toLowerCase", "toUpperCase", "trim", "split", "format", "valueOf", "getBytes", "toCharArray"]
+  },
+  {
+    "className": "java.lang.StringBuilder",
+    "implementsList": ["java.io.Serializable", "java.lang.CharSequence"],
+    "description": "가변적인(mutable) 문자열을 생성하는 클래스입니다. 문자열을 자주 변경해야 할 때 String보다 효율적입니다.",
+    "type": "UTILITY_CLASS",
+    "commonMethods": ["append", "insert", "delete", "deleteCharAt", "replace", "reverse", "toString", "length", "capacity"]
+  },
+  {
+    "className": "java.lang.StringBuffer",
+    "implementsList": ["java.io.Serializable", "java.lang.CharSequence"],
+    "description": "StringBuilder와 유사하지만, 스레드 안전(thread-safe)한 가변 문자열 클래스입니다. 멀티스레드 환경에서 안전하게 문자열을 조작할 수 있습니다.",
+    "type": "UTILITY_CLASS",
+    "commonMethods": ["append", "insert", "delete", "toString", "length", "capacity"]
+  },
+  {
+    "className": "java.lang.Integer",
+    "extendsName": "java.lang.Number",
+    "implementsList": ["java.lang.Comparable<Integer>"],
+    "description": "기본 데이터 타입 int를 객체로 감싼 래퍼(wrapper) 클래스입니다. 정수 관련 유틸리티 메소드도 제공합니다.",
+    "type": "WRAPPER_CLASS",
+    "commonMethods": ["parseInt", "valueOf", "toString", "intValue", "equals", "compareTo", "hashCode"]
+  },
+  {
+    "className": "java.lang.Long", "extendsName": "java.lang.Number", "implementsList": ["java.lang.Comparable<Long>"],
+    "description": "기본 데이터 타입 long을 객체로 감싼 래퍼 클래스입니다.", "type": "WRAPPER_CLASS"
+  },
+  {
+    "className": "java.lang.Double", "extendsName": "java.lang.Number", "implementsList": ["java.lang.Comparable<Double>"],
+    "description": "기본 데이터 타입 double을 객체로 감싼 래퍼 클래스입니다.", "type": "WRAPPER_CLASS"
+  },
+  {
+    "className": "java.lang.Boolean", "implementsList": ["java.io.Serializable", "java.lang.Comparable<Boolean>"],
+    "description": "기본 데이터 타입 boolean을 객체로 감싼 래퍼 클래스입니다.", "type": "WRAPPER_CLASS"
+  },
+  {
+    "className": "java.lang.Character", "implementsList": ["java.io.Serializable", "java.lang.Comparable<Character>"],
+    "description": "기본 데이터 타입 char를 객체로 감싼 래퍼 클래스입니다. 문자 관련 유틸리티 메소드도 제공합니다.",
+    "type": "WRAPPER_CLASS", "commonMethods": ["isLetter", "isDigit", "isWhitespace", "isUpperCase", "isLowerCase", "toUpperCase", "toLowerCase"]
+  },
+  {
+    "className": "java.lang.Math",
+    "description": "기본적인 수치 연산을 수행하는 정적(static) 메소드들을 제공하는 유틸리티 클래스입니다. (예: sin, cos, sqrt, pow, abs, round, random). 인스턴스화할 수 없습니다.",
+    "type": "UTILITY_CLASS",
+    "commonMethods": ["abs", "sqrt", "pow", "sin", "cos", "tan", "round", "ceil", "floor", "max", "min", "random", "log", "exp"]
+  },
+  {
+    "className": "java.lang.System",
+    "description": "표준 입력, 표준 출력, 에러 출력 스트림, 시스템 프로퍼티 및 환경 변수 접근, 가비지 컬렉션 호출 등 시스템 관련 유용한 필드와 메소드를 제공하는 클래스입니다. 인스턴스화할 수 없습니다.",
+    "type": "UTILITY_CLASS",
+    "commonMethods": ["currentTimeMillis", "nanoTime", "getProperty", "getenv", "exit", "gc", "arraycopy"]
   },
   {
     "className": "java.lang.Runnable",
-    "implementsList": [],
-    "description": "The Runnable interface should be implemented by any class whose instances are intended to be executed by a thread.",
-    "type": "INTERFACE_CORE"
+    "description": "인스턴스가 스레드에 의해 실행될 수 있는 모든 클래스가 구현해야 하는 인터페이스입니다. run() 메소드 하나만 가지고 있습니다.",
+    "type": "INTERFACE_CORE",
+    "commonMethods": ["run"]
+  },
+  {
+    "className": "java.lang.Thread", "implementsList": ["java.lang.Runnable"],
+    "description": "애플리케이션 내에서 실행의 스레드를 나타냅니다. 스레드를 생성하고 제어하는 기능을 제공합니다.",
+    "type": "CORE_CLASS", "commonMethods": ["start", "run", "sleep", "join", "interrupt", "isAlive", "currentThread", "yield"]
+  },
+  {
+    "className": "java.lang.Exception", "extendsName": "java.lang.Throwable",
+    "description": "프로그램 실행 중 발생하는 예외 상황을 나타내는 모든 예외 클래스들의 부모 클래스입니다. 일반적으로 애플리케이션에서 처리해야 하는 예외입니다.",
+    "type": "EXCEPTION_BASE"
+  },
+  {
+    "className": "java.lang.RuntimeException", "extendsName": "java.lang.Exception",
+    "description": "주로 프로그래밍 오류로 인해 발생하는, 명시적으로 처리하지 않아도 되는(unchecked) 예외들의 부모 클래스입니다.",
+    "type": "EXCEPTION_BASE"
+  },
+  {
+    "className": "java.lang.Error", "extendsName": "java.lang.Throwable",
+    "description": "시스템 레벨의 심각한 오류로, 애플리케이션에서 일반적으로 처리하거나 복구할 수 없는 문제를 나타냅니다.",
+    "type": "ERROR_BASE"
+  },
+  {
+    "className": "java.lang.Comparable",
+    "description": "객체의 자연스러운 순서를 정의하는 인터페이스입니다. compareTo() 메소드를 구현하여 객체 간 비교가 가능하게 합니다.",
+    "type": "INTERFACE_CORE", "commonMethods": ["compareTo"]
+  },
+  {
+    "className": "java.lang.Iterable",
+    "description": "for-each 루프에서 사용될 수 있는 객체를 나타내는 인터페이스입니다. iterator() 메소드를 구현해야 합니다.",
+    "type": "INTERFACE_CORE", "commonMethods": ["iterator", "forEach"]
+  },
+
+  {
+    "className": "java.util.List", "extendsName": "java.util.Collection",
+    "description": "순서가 있는 요소들의 컬렉션을 나타내는 인터페이스입니다. 중복 요소를 허용합니다.",
+    "type": "COLLECTION_INTERFACE", "commonMethods": ["add", "get", "set", "remove", "size", "isEmpty", "contains", "iterator", "listIterator", "indexOf", "subList"]
+  },
+  {
+    "className": "java.util.ArrayList", "extendsName": "java.util.AbstractList", "implementsList": ["java.util.List", "java.util.RandomAccess", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "List 인터페이스의 가변 크기 배열 구현체입니다. 요소 접근이 빠르지만, 삽입/삭제는 상대적으로 느릴 수 있습니다.",
+    "type": "COLLECTION_IMPL", "commonMethods": ["add", "get", "remove", "size", "isEmpty", "trimToSize", "ensureCapacity"]
+  },
+  {
+    "className": "java.util.LinkedList", "extendsName": "java.util.AbstractSequentialList", "implementsList": ["java.util.List", "java.util.Deque", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "List와 Deque 인터페이스의 이중 연결 리스트 구현체입니다. 요소 삽입/삭제가 빠르지만, 임의 접근은 느립니다.",
+    "type": "COLLECTION_IMPL", "commonMethods": ["addFirst", "addLast", "removeFirst", "removeLast", "getFirst", "getLast", "peek", "poll", "offer"]
+  },
+  {
+    "className": "java.util.Set", "extendsName": "java.util.Collection",
+    "description": "중복을 허용하지 않는 요소들의 컬렉션을 나타내는 인터페이스입니다.",
+    "type": "COLLECTION_INTERFACE", "commonMethods": ["add", "remove", "contains", "size", "isEmpty", "iterator"]
+  },
+  {
+    "className": "java.util.HashSet", "extendsName": "java.util.AbstractSet", "implementsList": ["java.util.Set", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "Set 인터페이스의 해시 테이블 기반 구현체입니다. 요소의 순서를 보장하지 않습니다. null 요소를 허용합니다.",
+    "type": "COLLECTION_IMPL"
+  },
+  {
+    "className": "java.util.TreeSet", "extendsName": "java.util.AbstractSet", "implementsList": ["java.util.NavigableSet", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "Set 인터페이스의 트리 기반 구현체입니다. 요소들이 정렬된 순서로 저장됩니다 (기본적으로 자연 순서 또는 Comparator 사용).",
+    "type": "COLLECTION_IMPL", "commonMethods": ["first", "last", "lower", "higher", "subSet", "headSet", "tailSet"]
+  },
+  {
+    "className": "java.util.Map",
+    "description": "키(key)와 값(value)을 한 쌍으로 저장하는 객체를 나타내는 인터페이스입니다. 키는 중복될 수 없습니다.",
+    "type": "COLLECTION_INTERFACE", "commonMethods": ["put", "get", "remove", "containsKey", "containsValue", "size", "isEmpty", "keySet", "values", "entrySet"]
+  },
+  {
+    "className": "java.util.HashMap", "extendsName": "java.util.AbstractMap", "implementsList": ["java.util.Map", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "Map 인터페이스의 해시 테이블 기반 구현체입니다. 요소의 순서를 보장하지 않습니다. null 키와 null 값을 허용합니다.",
+    "type": "COLLECTION_IMPL"
+  },
+  {
+    "className": "java.util.TreeMap", "extendsName": "java.util.AbstractMap", "implementsList": ["java.util.NavigableMap", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "Map 인터페이스의 레드-블랙 트리 기반 구현체입니다. 키들이 정렬된 순서로 저장됩니다.",
+    "type": "COLLECTION_IMPL", "commonMethods": ["firstKey", "lastKey", "lowerKey", "higherKey", "subMap", "headMap", "tailMap"]
+  },
+  {
+    "className": "java.util.Queue", "extendsName": "java.util.Collection",
+    "description": "처리되기 전에 요소를 유지하기 위한 컬렉션 인터페이스입니다. 일반적으로 FIFO(First-In, First-Out) 순서로 요소를 정렬합니다.",
+    "type": "COLLECTION_INTERFACE", "commonMethods": ["add", "offer", "remove", "poll", "element", "peek"]
+  },
+  {
+    "className": "java.util.Deque", "extendsName": "java.util.Queue",
+    "description": "양쪽 끝에서 요소 삽입 및 제거를 지원하는 선형 컬렉션 인터페이스입니다 (Double Ended Queue).",
+    "type": "COLLECTION_INTERFACE", "commonMethods": ["addFirst", "addLast", "offerFirst", "offerLast", "removeFirst", "removeLast", "pollFirst", "pollLast", "getFirst", "getLast", "peekFirst", "peekLast"]
+  },
+  {
+    "className": "java.util.Iterator",
+    "description": "컬렉션의 요소를 순차적으로 접근하기 위한 인터페이스입니다.",
+    "type": "INTERFACE_UTIL", "commonMethods": ["hasNext", "next", "remove"]
+  },
+  {
+    "className": "java.util.Comparator",
+    "description": "두 객체의 순서를 비교하는 함수 객체(functor)를 위한 인터페이스입니다. 정렬 순서를 커스터마이징할 때 사용됩니다.",
+    "type": "INTERFACE_UTIL", "commonMethods": ["compare", "equals", "reversed", "thenComparing"]
+  },
+  {
+    "className": "java.util.Date",
+    "description": "특정 순간을 나타내는 클래스입니다. (Java 8 이후에는 java.time 패키지 사용이 권장됩니다.)",
+    "type": "DATE_TIME_LEGACY", "commonMethods": ["getTime", "setTime", "before", "after", "equals", "compareTo"]
+  },
+  {
+    "className": "java.util.Calendar", "extendsName": "java.lang.Object",
+    "description": "날짜와 시간 필드를 조작하기 위한 추상 클래스입니다. (Java 8 이후에는 java.time 패키지 사용이 권장됩니다.)",
+    "type": "DATE_TIME_LEGACY", "commonMethods": ["getInstance", "get", "set", "add", "getTime", "setTime"]
+  },
+  {
+    "className": "java.util.Random",
+    "description": "난수(pseudorandom number)를 생성하는 클래스입니다.",
+    "type": "UTILITY_CLASS", "commonMethods": ["nextInt", "nextDouble", "nextBoolean", "nextBytes"]
+  },
+  {
+    "className": "java.util.UUID",
+    "description": "범용 고유 식별자(Universally Unique Identifier)를 나타내는 클래스입니다.",
+    "type": "UTILITY_CLASS", "commonMethods": ["randomUUID", "fromString", "toString", "getMostSignificantBits", "getLeastSignificantBits"]
+  },
+  {
+    "className": "java.util.Optional",
+    "description": "null이 될 수 있는 값을 감싸는 컨테이너 객체입니다. NullPointerException을 방지하고 코드의 명확성을 높이는 데 사용됩니다.",
+    "type": "UTILITY_CLASS", "commonMethods": ["of", "ofNullable", "empty", "isPresent", "get", "orElse", "orElseGet", "orElseThrow", "map", "flatMap", "filter"]
+  },
+  {
+    "className": "java.util.Arrays",
+    "description": "배열을 조작하기 위한 다양한 정적 유틸리티 메소드(정렬, 검색, 비교, 채우기 등)를 제공합니다.",
+    "type": "UTILITY_CLASS", "commonMethods": ["sort", "binarySearch", "equals", "fill", "asList", "copyOf", "toString", "stream"]
+  },
+  {
+    "className": "java.util.Collections",
+    "description": "컬렉션에 대한 연산을 수행하거나 컬렉션을 반환하는 정적 유틸리티 메소드를 제공합니다 (정렬, 검색, 셔플, 동기화 래퍼 등).",
+    "type": "UTILITY_CLASS", "commonMethods": ["sort", "binarySearch", "reverse", "shuffle", "max", "min", "synchronizedList", "unmodifiableList", "emptyList"]
+  },
+
+  {
+    "className": "java.io.InputStream", "extendsName": "java.lang.Object", "implementsList": ["java.io.Closeable"],
+    "description": "바이트 기반 입력 스트림을 나타내는 추상 클래스입니다. 파일, 네트워크 연결 등에서 데이터를 읽는 데 사용됩니다.",
+    "type": "IO_STREAM", "commonMethods": ["read", "available", "close", "skip"]
+  },
+  {
+    "className": "java.io.OutputStream", "extendsName": "java.lang.Object", "implementsList": ["java.io.Closeable", "java.io.Flushable"],
+    "description": "바이트 기반 출력 스트림을 나타내는 추상 클래스입니다. 파일, 네트워크 연결 등으로 데이터를 쓰는 데 사용됩니다.",
+    "type": "IO_STREAM", "commonMethods": ["write", "flush", "close"]
+  },
+  {
+    "className": "java.io.Reader", "extendsName": "java.lang.Object", "implementsList": ["java.lang.Readable", "java.io.Closeable"],
+    "description": "문자 기반 입력 스트림을 나타내는 추상 클래스입니다.",
+    "type": "IO_READER_WRITER", "commonMethods": ["read", "close"]
+  },
+  {
+    "className": "java.io.Writer", "extendsName": "java.lang.Object", "implementsList": ["java.lang.Appendable", "java.io.Closeable", "java.io.Flushable"],
+    "description": "문자 기반 출력 스트림을 나타내는 추상 클래스입니다.",
+    "type": "IO_READER_WRITER", "commonMethods": ["write", "append", "flush", "close"]
+  },
+  {
+    "className": "java.io.File", "implementsList": ["java.io.Serializable", "java.lang.Comparable<File>"],
+    "description": "파일 시스템의 파일 또는 디렉토리 경로명을 추상적으로 표현한 클래스입니다. 파일 생성, 삭제, 정보 조회 등의 기능을 제공합니다.",
+    "type": "IO_FILE", "commonMethods": ["exists", "isFile", "isDirectory", "length", "getName", "getPath", "getAbsolutePath", "getParent", "list", "listFiles", "mkdir", "mkdirs", "createNewFile", "delete", "renameTo"]
+  },
+  {
+    "className": "java.io.FileInputStream", "extendsName": "java.io.InputStream",
+    "description": "파일 시스템의 파일로부터 바이트를 읽어오는 입력 스트림입니다.",
+    "type": "IO_STREAM_IMPL"
+  },
+  {
+    "className": "java.io.FileOutputStream", "extendsName": "java.io.OutputStream",
+    "description": "파일 시스템의 파일에 바이트를 쓰는 출력 스트림입니다.",
+    "type": "IO_STREAM_IMPL"
+  },
+  {
+    "className": "java.io.BufferedReader", "extendsName": "java.io.Reader",
+    "description": "문자 입력 스트림으로부터 텍스트를 버퍼링하여 읽음으로써 문자, 배열, 라인 단위 읽기의 효율을 높입니다.",
+    "type": "IO_READER_WRITER_IMPL", "commonMethods": ["readLine", "read"]
+  },
+  {
+    "className": "java.io.BufferedWriter", "extendsName": "java.io.Writer",
+    "description": "문자 출력 스트림으로 텍스트를 버퍼링하여 씀으로써 문자, 배열, 라인 단위 쓰기의 효율을 높입니다.",
+    "type": "IO_READER_WRITER_IMPL", "commonMethods": ["write", "newLine", "flush"]
+  },
+  {
+    "className": "java.io.Serializable",
+    "description": "객체가 직렬화될 수 있음을 나타내는 마커 인터페이스입니다. 구현해야 할 메소드는 없습니다.",
+    "type": "INTERFACE_MARKER"
+  },
+  {
+    "className": "java.io.Closeable", "extendsName": "java.lang.AutoCloseable",
+    "description": "닫을 수 있는 자원(예: 스트림)을 나타내는 인터페이스입니다. close() 메소드를 가집니다. try-with-resources 구문과 함께 사용됩니다.",
+    "type": "INTERFACE_UTIL", "commonMethods": ["close"]
+  },
+
+  {
+    "className": "java.net.URL",
+    "description": "URL(Uniform Resource Locator)을 나타내는 클래스입니다. 웹 리소스에 접근하는 데 사용됩니다.",
+    "type": "NETWORKING", "commonMethods": ["openConnection", "openStream", "getProtocol", "getHost", "getPort", "getFile", "getQuery"]
+  },
+  {
+    "className": "java.net.URLConnection",
+    "description": "URL과 애플리케이션 간의 통신 링크를 나타내는 추상 클래스입니다. HTTP 연결을 위해서는 HttpURLConnection을 사용합니다.",
+    "type": "NETWORKING", "commonMethods": ["connect", "getInputStream", "getOutputStream", "getContentType", "getContentLength", "getHeaderField"]
+  },
+  {
+    "className": "java.net.HttpURLConnection", "extendsName": "java.net.URLConnection",
+    "description": "HTTP 프로토콜을 위한 URLConnection입니다. HTTP 특정 기능(요청 메소드 설정, 응답 코드 확인 등)을 제공합니다.",
+    "type": "NETWORKING_IMPL"
+  },
+  {
+    "className": "java.net.Socket",
+    "description": "클라이언트 측 TCP 소켓을 구현하는 클래스입니다. 특정 서버의 특정 포트로 연결을 설정하는 데 사용됩니다.",
+    "type": "NETWORKING_IMPL", "commonMethods": ["getInputStream", "getOutputStream", "connect", "close", "isClosed", "isConnected"]
+  },
+  {
+    "className": "java.net.ServerSocket",
+    "description": "서버 측 TCP 소켓을 구현하는 클래스입니다. 클라이언트의 연결 요청을 기다리는 데 사용됩니다.",
+    "type": "NETWORKING_IMPL", "commonMethods": ["accept", "bind", "close", "isClosed"]
+  },
+
+  {
+    "className": "java.time.LocalDate",
+    "description": "날짜(연, 월, 일)를 나타내는 불변 객체입니다. 시간대 정보는 포함하지 않습니다.",
+    "type": "DATE_TIME_NEW", "commonMethods": ["now", "of", "plusDays", "minusDays", "getDayOfWeek", "getDayOfMonth", "getDayOfYear", "getMonth", "getYear", "isBefore", "isAfter"]
+  },
+  {
+    "className": "java.time.LocalTime",
+    "description": "시간(시, 분, 초, 나노초)을 나타내는 불변 객체입니다. 날짜나 시간대 정보는 포함하지 않습니다.",
+    "type": "DATE_TIME_NEW", "commonMethods": ["now", "of", "plusHours", "minusMinutes", "getHour", "getMinute", "getSecond"]
+  },
+  {
+    "className": "java.time.LocalDateTime",
+    "description": "날짜와 시간을 함께 나타내는 불변 객체입니다. 시간대 정보는 포함하지 않습니다.",
+    "type": "DATE_TIME_NEW", "commonMethods": ["now", "of", "plusDays", "minusHours", "toLocalDate", "toLocalTime"]
+  },
+  {
+    "className": "java.time.ZonedDateTime",
+    "description": "특정 시간대의 날짜와 시간을 나타내는 불변 객체입니다.",
+    "type": "DATE_TIME_NEW", "commonMethods": ["now", "of", "withZoneSameInstant", "toLocalDateTime"]
+  },
+  {
+    "className": "java.time.Instant",
+    "description": "시간축의 특정 한 지점(타임스탬프)을 나타내는 불변 객체입니다. 보통 UTC 기준입니다.",
+    "type": "DATE_TIME_NEW", "commonMethods": ["now", "ofEpochMilli", "toEpochMilli", "plusSeconds", "minusNanos"]
+  },
+  {
+    "className": "java.time.Duration",
+    "description": "시간의 양(초, 나노초 단위)을 나타내는 불변 객체입니다.",
+    "type": "DATE_TIME_NEW", "commonMethods": ["between", "ofSeconds", "toMillis", "toHours", "plus", "minus"]
+  },
+  {
+    "className": "java.time.Period",
+    "description": "날짜의 양(연, 월, 일 단위)을 나타내는 불변 객체입니다.",
+    "type": "DATE_TIME_NEW", "commonMethods": ["between", "ofDays", "plusYears", "minusMonths"]
+  },
+  {
+    "className": "java.time.format.DateTimeFormatter",
+    "description": "날짜/시간 객체를 특정 형식의 문자열로 변환하거나, 문자열을 날짜/시간 객체로 파싱하는 데 사용되는 클래스입니다.",
+    "type": "DATE_TIME_FORMAT", "commonMethods": ["ofPattern", "format", "parse"]
+  },
+
+  {
+    "className": "java.util.concurrent.ExecutorService", "extendsName": "java.util.concurrent.Executor",
+    "description": "비동기 작업 실행을 위한 고수준 인터페이스입니다. 스레드 풀 관리, 작업 제출 및 생명주기 관리 기능을 제공합니다.",
+    "type": "CONCURRENCY_INTERFACE", "commonMethods": ["submit", "execute", "shutdown", "shutdownNow", "isShutdown", "isTerminated", "awaitTermination"]
+  },
+  {
+    "className": "java.util.concurrent.Executors",
+    "description": "Executor, ExecutorService, ScheduledExecutorService, ThreadFactory, Callable 등을 생성하기 위한 정적 팩토리 메소드를 제공하는 유틸리티 클래스입니다.",
+    "type": "CONCURRENCY_UTIL", "commonMethods": ["newFixedThreadPool", "newCachedThreadPool", "newSingleThreadExecutor", "newScheduledThreadPool"]
+  },
+  {
+    "className": "java.util.concurrent.Future",
+    "description": "비동기 계산의 결과를 나타내는 인터페이스입니다. 작업 완료 여부 확인, 결과 가져오기, 작업 취소 등의 메소드를 제공합니다.",
+    "type": "CONCURRENCY_INTERFACE", "commonMethods": ["get", "isDone", "isCancelled", "cancel"]
+  },
+  {
+    "className": "java.util.concurrent.Callable",
+    "description": "결과를 반환하고 예외를 던질 수 있는 작업을 나타내는 함수형 인터페이스입니다. Runnable과 유사하지만, 반환값과 예외 처리가 가능합니다.",
+    "type": "CONCURRENCY_INTERFACE", "commonMethods": ["call"]
+  },
+  {
+    "className": "java.util.concurrent.locks.Lock",
+    "description": "내장 모니터 락(synchronized 키워드)보다 더 유연한 락킹 메커니즘을 제공하는 인터페이스입니다.",
+    "type": "CONCURRENCY_LOCK", "commonMethods": ["lock", "unlock", "tryLock", "newCondition"]
+  },
+  {
+    "className": "java.util.concurrent.locks.ReentrantLock", "implementsList": ["java.util.concurrent.locks.Lock", "java.io.Serializable"],
+    "description": "재진입 가능한 상호 배제 Lock 구현체입니다. synchronized와 유사한 기능을 제공하지만 더 많은 제어 기능을 가집니다.",
+    "type": "CONCURRENCY_LOCK_IMPL"
+  },
+  {
+    "className": "java.util.concurrent.atomic.AtomicInteger", "extendsName": "java.lang.Number",
+    "description": "원자적으로 업데이트될 수 있는 int 값을 가지는 클래스입니다. 멀티스레드 환경에서 동기화 없이 안전하게 카운터 등을 구현하는 데 사용됩니다.",
+    "type": "CONCURRENCY_ATOMIC", "commonMethods": ["get", "set", "getAndSet", "incrementAndGet", "decrementAndGet", "addAndGet", "compareAndSet"]
+  },
+  {
+    "className": "java.util.concurrent.ConcurrentHashMap", "extendsName": "java.util.AbstractMap", "implementsList": ["java.util.concurrent.ConcurrentMap", "java.io.Serializable"],
+    "description": "높은 동시성을 지원하는 해시 테이블 기반의 Map 구현체입니다. 여러 스레드가 동시에 안전하게 접근하고 수정할 수 있습니다.",
+    "type": "CONCURRENCY_COLLECTION"
+  },
+
+  {
+    "className": "java.util.stream.Stream", "extendsName": "java.util.stream.BaseStream",
+    "description": "요소들의 시퀀스를 지원하며, 집계 연산을 수행할 수 있는 인터페이스입니다. 함수형 스타일의 데이터 처리를 가능하게 합니다.",
+    "type": "STREAM_API", "commonMethods": ["filter", "map", "flatMap", "distinct", "sorted", "peek", "limit", "skip", "forEach", "toArray", "reduce", "collect", "min", "max", "count", "anyMatch", "allMatch", "noneMatch", "findFirst", "findAny"]
+  },
+  {
+    "className": "java.util.stream.Collectors",
+    "description": "Stream의 요소들을 컬렉션이나 다른 복잡한 객체로 축약(reduction)하기 위한 다양한 Collector 구현을 제공하는 유틸리티 클래스입니다.",
+    "type": "STREAM_API_UTIL", "commonMethods": ["toList", "toSet", "toMap", "joining", "groupingBy", "counting", "summingInt", "averagingInt"]
   }
 ]

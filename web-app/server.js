@@ -4,38 +4,31 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
-const simpleQueue = require('./simpleQueue'); // 수정된 큐 모듈 임포트
+const { v4: uuidv4 } = require('uuid');
+// jobStatusManager.js를 사용하는 대신, 직접 파일 기반 상태 관리를 한다고 가정하고 진행합니다.
+// 만약 jobStatusManager.js를 사용하고 있다면, 이 파일과 worker.js에서 해당 모듈을 require해야 합니다.
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
-app.use(express.json()); // JSON 요청 본문 파싱
+app.use(express.json());
 
 const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
-// 분석 결과를 저장할 디렉토리 (워커와 공유되어야 함 - 실제로는 S3 등 사용)
 const resultsBaseDir = path.join(__dirname, 'analysis_results');
-if (!fs.existsSync(resultsBaseDir)) {
-    fs.mkdirSync(resultsBaseDir, { recursive: true });
-}
+if (!fs.existsSync(resultsBaseDir)) fs.mkdirSync(resultsBaseDir, { recursive: true });
 
+const JOBS_QUEUE_DIR = path.join(__dirname, 'jobs_queue_files');
+if (!fs.existsSync(JOBS_QUEUE_DIR)) fs.mkdirSync(JOBS_QUEUE_DIR, { recursive: true });
+
+// [수정] JOB_STATUS_FILE 상수 선언 추가
+const JOB_STATUSES_FILE = path.join(__dirname, 'job_statuses_store.json');
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // 각 업로드마다 고유한 디렉토리 생성 (선택 사항, 보안 및 정리 용이)
-        // const uploadSessionDir = path.join(uploadsDir, uuidv4());
-        // if (!fs.existsSync(uploadSessionDir)) fs.mkdirSync(uploadSessionDir, { recursive: true });
-        // cb(null, uploadSessionDir);
-        cb(null, uploadsDir); // 간단하게 uploads 폴더에 바로 저장
-    },
-    filename: (req, file, cb) => {
-        // 고유한 파일명 생성 (예: 원래이름-타임스탬프.zip)
-        cb(null, `${path.parse(file.originalname).name}-${Date.now()}${path.extname(file.originalname)}`);
-    }
+    destination: (req, file, cb) => cb(null, uploadsDir),
+    filename: (req, file, cb) => cb(null, `${path.parse(file.originalname).name}-${Date.now()}${path.extname(file.originalname)}`)
 });
 const upload = multer({
     storage: storage,
@@ -45,72 +38,117 @@ const upload = multer({
         }
         cb(null, true);
     },
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB 파일 사이즈 제한
+    limits: { fileSize: 10 * 1024 * 1024 }
 });
 
-// API 엔드포인트: 분석 요청
+// --- Helper function to manage job statuses in a file ---
+function readAllJobStatusesFromFile() {
+    try {
+        if (fs.existsSync(JOB_STATUSES_FILE)) { // [수정] 상수명 변경 JOB_STATUS_FILE -> JOB_STATUSES_FILE
+            const fileContent = fs.readFileSync(JOB_STATUSES_FILE, 'utf-8');
+            return fileContent ? JSON.parse(fileContent) : {};
+        }
+    } catch (e) { console.error("[API Server] Error reading job_statuses_store.json:", e); }
+    return {};
+}
+
+function writeAllJobStatusesToFile(statuses) {
+    try {
+        fs.writeFileSync(JOB_STATUSES_FILE, JSON.stringify(statuses, null, 2), 'utf-8'); // [수정] 상수명 변경
+    } catch (e) { console.error("[API Server] Error writing job_statuses_store.json:", e); }
+}
+// ---------------------------------------------------------
+
 app.post('/api/analyze', upload.single('zipFile'), (req, res) => {
     if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded or invalid file type.' });
+        return res.status(400).json({ error: 'No file uploaded.' });
     }
 
-    const zipFilePath = req.file.path; // multer가 저장한 파일 경로
+    const jobId = uuidv4();
+    const zipFilePath = req.file.path;
     const originalFileName = req.file.originalname;
+    const userId = 'temp-user-id';
 
-    // TODO: 사용자 인증이 있다면 userId 등을 jobData에 포함
-    const userId = 'temp-user-id'; // 임시 사용자 ID
+    const jobResultDir = path.join(resultsBaseDir, jobId);
+    if (!fs.existsSync(jobResultDir)) fs.mkdirSync(jobResultDir, { recursive: true });
+    const outputJsonPathForWorker = path.join(jobResultDir, 'analysis_output.json');
 
-    // 분석 결과를 저장할 이 작업만의 고유 디렉토리 경로 생성
-    const jobResultDir = path.join(resultsBaseDir, uuidv4()); // uuidv4 임포트 필요 또는 jobId 사용
-    if (!fs.existsSync(jobResultDir)) {
-        fs.mkdirSync(jobResultDir, { recursive: true });
-    }
-    const outputJsonPath = path.join(jobResultDir, 'analysis_output.json');
-
-
-    const jobData = {
-        zipFilePath: zipFilePath,         // 워커가 접근할 ZIP 파일 경로
-        originalFileName: originalFileName, // 원본 파일명 (로깅 또는 정리용)
-        outputJsonPath: outputJsonPath,   // 워커가 분석 결과를 저장할 경로
+    const jobDataForFile = {
+        id: jobId,
+        zipFilePath: zipFilePath,
+        originalFileName: originalFileName,
+        outputJsonPath: outputJsonPathForWorker,
         userId: userId,
-        // 기타 필요한 정보 (예: 분석 옵션, 사용자 플랜 등)
+        // status: 'queued', // 상태는 아래에서 별도 파일에 기록
+        createdAt: new Date().toISOString()
     };
 
-    // 작업을 큐에 추가하고 작업 ID를 받음
-    const jobId = simpleQueue.addJob(jobData);
+    // job_statuses_store.json 에 초기 상태 기록
+    const allStatuses = readAllJobStatusesFromFile();
+    allStatuses[jobId] = {
+        id: jobId,
+        status: 'queued',
+        originalFileName: originalFileName,
+        createdAt: jobDataForFile.createdAt,
+        updatedAt: jobDataForFile.createdAt,
+        outputJsonPathForWorker: outputJsonPathForWorker // 워커가 사용할 결과 경로도 저장
+    };
+    writeAllJobStatusesToFile(allStatuses);
 
-    console.log(`[API Server] Analysis job ${jobId} queued for file ${originalFileName}`);
-
-    res.status(202).json({ // 202 Accepted: 요청이 접수되었고 비동기 처리될 것임
-        message: 'Analysis request accepted and queued. Check status endpoint for progress.',
-        jobId: jobId,
-        statusUrl: `/api/analysis-status/${jobId}` // 상태 조회 URL
+    const jobTaskFilePath = path.join(JOBS_QUEUE_DIR, `${jobId}.json`);
+    fs.writeFile(jobTaskFilePath, JSON.stringify(jobDataForFile, null, 2), (err) => {
+        if (err) {
+            console.error(`[API Server] Failed to write job task file for ${jobId}:`, err);
+            if (fs.existsSync(zipFilePath)) fs.unlink(zipFilePath, () => {});
+            // 상태 파일에서 해당 작업 항목 제거 또는 'failed_to_queue'로 업데이트 (선택 사항)
+            const currentStatuses = readAllJobStatusesFromFile();
+            if (currentStatuses[jobId]) {
+                currentStatuses[jobId].status = 'failed_to_queue';
+                currentStatuses[jobId].error = 'Failed to write job task file.';
+                currentStatuses[jobId].updatedAt = new Date().toISOString();
+                writeAllJobStatusesToFile(currentStatuses);
+            }
+            return res.status(500).json({ error: 'Failed to queue analysis job.' });
+        }
+        console.log(`[API Server] Job task file created: ${jobTaskFilePath} for ${originalFileName}`);
+        res.status(202).json({
+            message: 'Analysis request accepted. Will be processed shortly.',
+            jobId: jobId,
+            statusUrl: `/api/analysis-status/${jobId}`
+        });
     });
 });
 
-// API 엔드포인트: 분석 상태 조회
 app.get('/api/analysis-status/:jobId', (req, res) => {
     const jobId = req.params.jobId;
-    const statusInfo = simpleQueue.getJobStatus(jobId);
+    const allStatuses = readAllJobStatusesFromFile();
+    const jobInfo = allStatuses[jobId];
 
-    if (statusInfo.status === 'not_found') {
-        return res.status(404).json({ error: 'Job not found or already processed and cleaned.' });
+    if (!jobInfo) {
+        const jobTaskFilePath = path.join(JOBS_QUEUE_DIR, `${jobId}.json`);
+        if (fs.existsSync(jobTaskFilePath)) {
+            return res.json({ id: jobId, status: 'queued', message: 'Job is in queue, waiting for worker to pick up.' });
+        }
+        return res.status(404).json({ error: 'Job not found.' });
     }
-    res.json(statusInfo);
+    // resultPath는 실제 결과 데이터가 아니므로 상태 정보에 포함해도 괜찮음
+    res.json(jobInfo);
 });
 
-// API 엔드포인트: 분석 결과 조회 (상태가 'completed'일 때 호출)
 app.get('/api/results/:jobId', (req, res) => {
     const jobId = req.params.jobId;
-    const jobInfo = simpleQueue.getJobStatus(jobId); // 먼저 상태를 가져옴
+    const allStatuses = readAllJobStatusesFromFile();
+    const jobInfo = allStatuses[jobId];
 
-    if (jobInfo.status !== 'completed') {
-        return res.status(400).json({ error: `Job ${jobId} is not completed. Current status: ${jobInfo.status}`, status: jobInfo.status });
+    if (!jobInfo || jobInfo.status !== 'completed') {
+        return res.status(400).json({
+            error: `Job ${jobId} not completed. Status: ${jobInfo?.status || 'unknown'}`,
+            status: jobInfo?.status,
+            details: jobInfo?.error
+        });
     }
 
-    // simpleQueue에서 결과 경로(resultPath)를 가져와 파일 읽기
-    // 또는 getJobResultData 함수를 사용하여 결과 직접 가져오기 (simpleQueue.js에 구현 필요)
-    const resultPath = jobInfo.resultPath; // simpleQueue.storeJobResult에서 resultPath로 저장했다고 가정
+    const resultPath = jobInfo.outputJsonPathForWorker; // 워커가 결과를 저장한 경로
     if (resultPath && fs.existsSync(resultPath)) {
         fs.readFile(resultPath, 'utf8', (err, data) => {
             if (err) {
@@ -125,15 +163,12 @@ app.get('/api/results/:jobId', (req, res) => {
             }
         });
     } else {
-        // 결과 데이터가 jobStatuses 객체에 직접 저장된 경우 (simpleQueue.js의 storeJobResult 구현에 따라 다름)
-        // const resultData = simpleQueue.getJobResultData(jobId);
-        // if(resultData) { res.json(resultData); } else ...
-        res.status(404).json({ error: 'Analysis result data or file not found for completed job.' });
+        console.error(`[API Server] Result file path not found or invalid for completed job ${jobId}. Path from status: ${resultPath}`);
+        res.status(404).json({ error: 'Analysis result file not found for completed job.' });
     }
 });
 
-
-// React 정적 파일 서비스 (프로덕션 빌드 시)
+// React 정적 파일 서비스
 app.use(express.static(path.join(__dirname, 'build')));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -143,4 +178,7 @@ app.listen(PORT, () => {
     console.log(`API Server (server.js) running on http://localhost:${PORT}`);
     console.log(`Uploads directory: ${uploadsDir}`);
     console.log(`Analysis results base directory: ${resultsBaseDir}`);
+    console.log(`Job queue directory (files): ${JOBS_QUEUE_DIR}`);
+    // [수정] 로그 메시지에 정확한 상수명 사용
+    console.log(`Job statuses file: ${JOB_STATUSES_FILE}`);
 });

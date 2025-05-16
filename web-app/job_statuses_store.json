@@ -1,0 +1,51 @@
+{
+  "ae539111-8eba-4142-a001-799271f8da40": {
+    "id": "ae539111-8eba-4142-a001-799271f8da40",
+    "status": "queued",
+    "originalFileName": "java_analyzer_test.zip",
+    "createdAt": "2025-05-16T08:21:14.966Z",
+    "updatedAt": "2025-05-16T08:21:14.966Z",
+    "outputJsonPathForWorker": "C:\\Users\\seongjin\\Documents\\JAVA-analyzer-project\\web-app\\analysis_results\\ae539111-8eba-4142-a001-799271f8da40\\analysis_output.json"
+  },
+  "undefined": {
+    "status": "failed",
+    "startedAt": "2025-05-16T08:21:17.341Z",
+    "updatedAt": "2025-05-16T08:21:17.689Z",
+    "error": "Java process for job undefined failed. Exit code: 1.",
+    "details": "Picked up JAVA_TOOL_OPTIONS: -Djute.maxbuffer=4194304\n\nUsage: java -jar java-analyzer.jar <zipFilePath> [outputTarget|stdout]",
+    "finishedAt": "2025-05-16T08:21:17.689Z"
+  },
+  "9f8f88db-651c-4aa1-858a-715182538a96": {
+    "id": "9f8f88db-651c-4aa1-858a-715182538a96",
+    "status": "completed",
+    "originalFileName": "java_analyzer_test.zip",
+    "createdAt": "2025-05-16T08:25:04.115Z",
+    "updatedAt": "2025-05-16T08:25:07.373Z",
+    "outputJsonPathForWorker": "C:\\Users\\seongjin\\Documents\\JAVA-analyzer-project\\web-app\\analysis_results\\9f8f88db-651c-4aa1-858a-715182538a96\\analysis_output.json",
+    "startedAt": "2025-05-16T08:25:04.706Z",
+    "resultPath": "C:\\Users\\seongjin\\Documents\\JAVA-analyzer-project\\web-app\\analysis_results\\9f8f88db-651c-4aa1-858a-715182538a96\\analysis_output.json",
+    "finishedAt": "2025-05-16T08:25:07.373Z"
+  },
+  "7a1c6433-a9e7-4017-a9b9-958e04699a8c": {
+    "id": "7a1c6433-a9e7-4017-a9b9-958e04699a8c",
+    "status": "completed",
+    "originalFileName": "java_analyzer_test.zip",
+    "createdAt": "2025-05-16T08:30:53.684Z",
+    "updatedAt": "2025-05-16T08:30:57.998Z",
+    "outputJsonPathForWorker": "C:\\Users\\seongjin\\Documents\\JAVA-analyzer-project\\web-app\\analysis_results\\7a1c6433-a9e7-4017-a9b9-958e04699a8c\\analysis_output.json",
+    "startedAt": "2025-05-16T08:30:56.605Z",
+    "resultPath": "C:\\Users\\seongjin\\Documents\\JAVA-analyzer-project\\web-app\\analysis_results\\7a1c6433-a9e7-4017-a9b9-958e04699a8c\\analysis_output.json",
+    "finishedAt": "2025-05-16T08:30:57.998Z"
+  },
+  "4a98d541-d8f1-41fb-a060-d2cb477b4113": {
+    "id": "4a98d541-d8f1-41fb-a060-d2cb477b4113",
+    "status": "completed",
+    "originalFileName": "java_structure_test.zip",
+    "createdAt": "2025-05-16T08:37:49.670Z",
+    "updatedAt": "2025-05-16T08:37:53.218Z",
+    "outputJsonPathForWorker": "C:\\Users\\seongjin\\Documents\\JAVA-analyzer-project\\web-app\\analysis_results\\4a98d541-d8f1-41fb-a060-d2cb477b4113\\analysis_output.json",
+    "startedAt": "2025-05-16T08:37:51.648Z",
+    "resultPath": "C:\\Users\\seongjin\\Documents\\JAVA-analyzer-project\\web-app\\analysis_results\\4a98d541-d8f1-41fb-a060-d2cb477b4113\\analysis_output.json",
+    "finishedAt": "2025-05-16T08:37:53.218Z"
+  }
+}
