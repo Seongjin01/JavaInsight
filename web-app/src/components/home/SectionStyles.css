@@ -1,0 +1,168 @@
+/* SectionStyles.css */
+
+.section-container {
+    max-width: 1100px; /* 콘텐츠 최대 너비 살짝 조정 */
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* 기본 섹션 (다크 테마) */
+.dark-section {
+    background-color: var(--antd-colorBgBase, #111827); /* App.js의 ConfigProvider와 일치 */
+    color: var(--antd-colorTextBase, #e5e7eb);
+    padding-top: 80px; /* section-padding 클래스 대신 직접 지정 */
+    padding-bottom: 80px;
+}
+.dark-section .section-title {
+    color: var(--antd-colorTextBase, white) !important;
+    font-size: 2.2rem !important; /* 반응형 */
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+    letter-spacing: -0.5px;
+}
+.dark-section .section-subtitle {
+    color: var(--antd-colorTextSecondary, #9ca3af) !important;
+    font-size: 1.1rem !important; /* 반응형 */
+    margin-bottom: 50px !important; /* 제목과 카드 사이 간격 */
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7 !important;
+}
+
+/* 밝은 테마 섹션 (필요시 사용) */
+.light-section {
+    background-color: #f9fafb; /* 매우 밝은 회색 */
+    color: #1f2937;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+.light-section .section-title { color: #111827 !important; }
+.light-section .section-subtitle { color: #4b5563 !important; }
+
+
+/* 카드 스타일 (다크 테마 위 카드) */
+.card-in-dark-section {
+    background: var(--antd-colorBgContainer, #1f2937) !important; /* App.js ConfigProvider와 일치 */
+    border: 1px solid var(--antd-colorBorder, #374151) !important;
+    border-radius: 8px !important; /* AntD 기본보다 살짝 더 둥글게 */
+    text-align: left;
+    padding: 28px 24px !important; /* 카드 내부 패딩 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    color: var(--antd-colorTextSecondary, #9ca3af) !important; /* 카드 내 기본 텍스트 */
+}
+.card-in-dark-section:hover {
+    transform: translateY(-6px); /* 호버 효과 강화 */
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+.card-in-dark-section .ant-typography-title { /* 카드 내 제목 */
+    color: var(--antd-colorTextBase, white) !important;
+    margin-top: 12px !important;
+    margin-bottom: 10px !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+}
+.card-in-dark-section p { /* 카드 내 문단 */
+    font-size: 0.95rem !important;
+    min-height: 60px; /* 레이아웃 일관성 */
+    line-height: 1.6;
+}
+.card-in-dark-section .anticon {
+    color: var(--antd-colorPrimary, #22c55e) !important;
+    font-size: 30px !important;
+    margin-bottom: 18px !important;
+}
+.card-in-dark-section.text-center { text-align: center; }
+
+
+/* 카드 스타일 (밝은 테마 위 카드 - 예시로 남겨둠, 현재 대부분 다크 테마 사용) */
+.card-in-light-section {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    /* ... (나머지 스타일은 이전과 유사하게 유지 또는 필요시 조정) ... */
+    color: #374151 !important;
+}
+.card-in-light-section .ant-typography-title { color: #1f2937 !important; }
+.card-in-light-section p { color: #4b5563 !important; }
+.card-in-light-section .anticon { color: var(--antd-colorPrimary, #22c55e) !important; }
+.card-in-light-section.text-center { text-align: center; }
+
+
+/* Testimonials 카드 */
+.testimonial-card.card-in-dark-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.testimonial-card .ant-avatar { background-color: var(--antd-colorPrimary, #22c55e) !important; }
+.testimonial-card .user-name { color: var(--antd-colorTextBase, white) !important; font-weight: 600; }
+.testimonial-card .user-company { color: var(--antd-colorTextSecondary, #9ca3af) !important; font-size: 0.9em; }
+.testimonial-card .comment-text {
+    font-style: italic;
+    color: var(--antd-colorText, #e5e7eb) !important;
+    margin-top: 18px;
+    padding-left: 18px;
+    border-left: 3px solid var(--antd-colorPrimary, #22c55e);
+    line-height: 1.7;
+}
+
+/* PricingTeaser 카드 (현재는 밝은 배경으로 되어 있지만, 다크 테마로 변경 가능) */
+.pricing-teaser-card.card-in-light-section { /* 또는 .card-in-dark-section으로 변경 */
+    text-align: center;
+}
+.pricing-teaser-card.popular { border-color: var(--antd-colorPrimary, #22c55e); }
+.pricing-teaser-card .ant-typography-title { font-weight: 600; margin-bottom: 15px; }
+.pricing-teaser-card .plan-description { min-height: 70px; margin-bottom: 25px; }
+.pricing-teaser-card .ant-btn { margin-top: 15px; }
+
+
+/* CtaSection */
+.cta-section {
+    background: linear-gradient(to right, #16a34a, #22c55e); /* 밝은 초록색 그라데이션 */
+    padding: 70px 30px;
+    text-align: center;
+}
+.cta-section .section-title {
+    font-size: 2.4rem !important;
+    color: white !important;
+    margin-bottom: 15px !important;
+    font-weight: 700;
+}
+.cta-section .section-subtitle {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 1.15rem !important;
+    margin-bottom: 35px !important;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.cta-section .ant-btn-default { /* CTA 버튼은 기본 버튼에 스타일 적용 */
+    background-color: white !important;
+    color: var(--antd-colorPrimary, #22c55e) !important;
+    border-color: white !important;
+    padding: 0 40px;
+    height: 55px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+.cta-section .ant-btn-default:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    color: #16a34a !important;
+}
+
+
+@media (max-width: 768px) {
+    .dark-section .section-title, .light-section .section-title  { font-size: 1.8rem !important; }
+    .dark-section .section-subtitle, .light-section .section-subtitle { font-size: 0.95rem !important; }
+    .card-in-dark-section, .card-in-light-section { padding: 20px !important; }
+    .card-in-dark-section .ant-typography-title, .card-in-light-section .ant-typography-title { font-size: 1.1rem !important; }
+
+    .cta-section { padding: 60px 20px; }
+    .cta-section .section-title { font-size: 2rem !important; }
+    .cta-section .section-subtitle { font-size: 1.05rem !important; }
+    .cta-section .ant-btn-default { height: 50px; font-size: 1.1rem; padding: 0 30px;}
+}

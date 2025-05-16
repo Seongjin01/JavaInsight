@@ -1,0 +1,143 @@
+/* App.css - 전역 및 기본 레이아웃 스타일 */
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* [수정] overflow: hidden; 제거 또는 주석 처리 */
+  /* overflow: hidden; */
+}
+
+body {
+  font-family: var(--antd-fontFamily, "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'");
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--antd-colorBgBase, #111827);
+  color: var(--antd-colorTextBase, #e5e7eb);
+}
+
+/* Sider 로고 컨테이너 */
+.logo-container {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.logo-container:hover {
+  background-color: var(--antd-colorBgElevated, #2a3142) !important;
+}
+
+/* Sider 메뉴 아이템 */
+.ant-layout-sider .ant-menu-inline.ant-menu-dark {
+  background: transparent;
+}
+.ant-layout-sider .ant-menu-inline .ant-menu-item,
+.ant-layout-sider .ant-menu-inline .ant-menu-submenu-title {
+    margin: 4px 8px;
+    width: calc(100% - 16px);
+    height: 42px;
+    line-height: 42px;
+    font-size: 0.95rem;
+    border-radius: var(--antd-borderRadiusSM, 4px);
+}
+
+/* 내부 페이지 Header */
+.app-header.ant-layout-header {
+  height: 64px;
+  line-height: 64px;
+}
+
+/* Header의 Breadcrumb */
+.app-header .ant-breadcrumb .ant-breadcrumb-link a,
+.app-header .ant-breadcrumb .ant-breadcrumb-link > span {
+  color: var(--antd-colorTextSecondary) !important;
+  transition: color 0.2s;
+}
+.app-header .ant-breadcrumb .ant-breadcrumb-link a:hover {
+  color: var(--antd-colorPrimary) !important;
+}
+.app-header .ant-breadcrumb > .ant-breadcrumb-item:last-child .ant-breadcrumb-link,
+.app-header .ant-breadcrumb > .ant-breadcrumb-item:last-child > span {
+  color: var(--antd-colorTextBase) !important;
+  font-weight: 500;
+}
+.app-header .ant-breadcrumb .ant-breadcrumb-separator {
+  color: var(--antd-colorTextTertiary) !important;
+}
+
+/* 내부 페이지 Content 영역 */
+.app-content-wrapper { /* App.js의 Content 컴포넌트에 적용된 클래스 */
+  /* App.js에서 padding, flexGrow, overflowY 등으로 제어 */
+}
+
+.content-inner-wrapper { /* App.js에서 Content 내부 div에 적용된 클래스 */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.08);
+}
+
+/* 내부 페이지 Footer */
+.app-footer.ant-layout-footer {
+  text-align: center;
+  height: 60px;
+  line-height: normal;
+  padding: 10px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* FileUploaderPage 특정 스타일 (이전 답변 내용 유지) */
+.file-uploader-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 20px;
+  width: 100%;
+  /* height: 100%; // 부모가 flex item일 때, 여기서는 flex-grow로 충분할 수 있음 */
+}
+
+.file-uploader-container {
+  max-width: 600px;
+  width: 100%;
+  padding: 30px 35px;
+  background-color: var(--antd-colorBgElevated, #2a3142);
+  border-radius: var(--antd-borderRadiusLG, 8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.file-uploader-container .custom-dragger.ant-upload.ant-upload-drag {
+  background: var(--antd-colorBgLayout, #001529) !important;
+  border: 2px dashed var(--antd-colorBorder, #374151) !important;
+  border-radius: var(--antd-borderRadius, 6px);
+  padding: 25px 20px;
+  transition: border-color 0.3s;
+}
+.file-uploader-container .custom-dragger.ant-upload.ant-upload-drag:hover {
+  border-color: var(--antd-colorPrimary, #22c55e) !important;
+}
+.file-uploader-container .custom-dragger .ant-upload-drag-icon .anticon {
+  color: var(--antd-colorPrimary, #22c55e) !important;
+  font-size: 42px !important;
+}
+.file-uploader-container .custom-dragger .ant-upload-text {
+  color: var(--antd-colorText, #e5e7eb) !important;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  font-weight: 500;
+}
+.file-uploader-container .custom-dragger .ant-upload-hint {
+  color: var(--antd-colorTextSecondary, #9ca3af) !important;
+  font-size: 0.9rem;
+}
+.file-uploader-container .ant-btn-primary {
+  margin-top: 24px;
+  width: 100%;
+  height: 48px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}

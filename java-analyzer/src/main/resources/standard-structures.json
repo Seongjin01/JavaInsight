@@ -1,0 +1,22 @@
+[
+  {
+    "className": "java.util.ArrayList",
+    "extendsName": "java.util.AbstractList",
+    "implementsList": ["java.util.List", "java.util.RandomAccess", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "Resizable-array implementation of the List interface. Implements all optional list operations, and permits all elements, including null.",
+    "type": "COLLECTION"
+  },
+  {
+    "className": "java.util.HashMap",
+    "extendsName": "java.util.AbstractMap",
+    "implementsList": ["java.util.Map", "java.lang.Cloneable", "java.io.Serializable"],
+    "description": "Hash table based implementation of the Map interface. This implementation provides all of the optional map operations, and permits null values and the null key.",
+    "type": "COLLECTION"
+  },
+  {
+    "className": "java.lang.Runnable",
+    "implementsList": [],
+    "description": "The Runnable interface should be implemented by any class whose instances are intended to be executed by a thread.",
+    "type": "INTERFACE_CORE"
+  }
+]

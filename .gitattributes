@@ -1,0 +1,37 @@
+# Git이 모든 텍스트 파일을 자동으로 감지하고, 줄 바꿈 문자를 LF로 정규화하도록 설정합니다.
+# 체크아웃 시에는 사용자의 OS 기본값 대신 LF를 사용하게 됩니다.
+# 이렇게 하면 Windows, macOS, Linux 사용자 모두 저장소에는 LF로 커밋하고,
+# 작업 디렉토리에서도 (대부분의 최신 편집기가 지원하는) LF를 사용하게 되어 일관성이 높아집니다.
+* text=auto eol=lf
+
+# 특정 파일 타입에 대해 명시적으로 텍스트 파일임을 알리고 LF를 사용하도록 지정할 수 있습니다.
+# 이는 Git이 텍스트 파일로 잘못 감지하지 못하는 경우를 대비합니다.
+*.java text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+*.properties text eol=lf # Java properties 파일
+
+# 배치 파일이나 쉘 스크립트는 OS 기본 줄 바꿈을 따르도록 할 수 있습니다. (선택 사항)
+# 보통 Windows에서는 CRLF, Linux/macOS에서는 LF 입니다.
+# text=auto로 두면 Git이 OS에 맞게 처리하려고 시도합니다.
+# 또는 명시적으로 지정할 수 있습니다.
+# *.bat text eol=crlf
+# *.sh text eol=lf
+
+# 바이너리 파일로 확실히 취급해야 하는 파일들은 변환되지 않도록 명시합니다.
+# Git이 보통 자동으로 감지하지만, 명시하면 더 확실합니다.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary
+# ... 기타 바이너리 파일 확장자 ...
