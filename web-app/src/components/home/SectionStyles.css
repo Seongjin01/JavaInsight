@@ -24,7 +24,7 @@
     color: var(--antd-colorTextSecondary, #9ca3af) !important;
     font-size: 1.1rem !important; /* 반응형 */
     margin-bottom: 50px !important; /* 제목과 카드 사이 간격 */
-    max-width: 680px;
+    max-width: 780px;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.7 !important;
