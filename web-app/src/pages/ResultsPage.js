@@ -100,33 +100,73 @@ const ResultsPage = ({ analysisResult, isLoading, error }) => {
 
     // ... (나머지 컴포넌트 코드) ...
     return (
-        <div className="results-page-container">
-            {/* ... */}
-            {/* graphEdges를 사용하지 않는다면 관련 UI도 제거 또는 주석 처리 */}
-            {/* ... */}
-            <Row gutter={[24,24]} style={{marginBottom: 24}}>
-                {/* ... */}
+        <div className="results-page-container" style={{padding: '0 16px'}}> {/* 페이지 전체 패딩 조정 */}
+            <Row gutter={[16, 16]} align="middle" justify="space-between" style={{ marginBottom: 24, marginTop: 10 }}>
+                <Col>
+                    <Title level={3} style={{ margin: 0 }}>
+                        <CodeOutlined style={{ marginRight: 10 }} /> Analysis Dashboard
+                    </Title>
+                    {classes && (
+                        <Paragraph type="secondary" style={{marginTop: 4, marginBottom: 0}}>
+                            Analyzed {classes.length} classes/interfaces.
+                            {searchTerm && ` (${filteredClasses.length} matching filter)`}
+                        </Paragraph>
+                    )}
+                </Col>
+                {/* Segmented는 사용하지 않으므로 일단 제거
+                <Col>
+                    <Segmented
+                        options={[ { label: 'Cards', value: 'Cards', icon: <ApartmentOutlined /> } ]}
+                        value={viewMode}
+                        onChange={setViewMode}
+                    />
+                </Col>
+                */}
             </Row>
+
+            <Search
+                placeholder="Filter by class name or package..."
+                allowClear
+                size="large"
+                onChange={e => setSearchTerm(e.target.value)} // setSearchTerm 사용
+                style={{ marginBottom: 24 }}
+            />
+
+            {processingErrors && processingErrors.length > 0 && (
+                 <Alert
+                    message={<><IssuesCloseOutlined /> File Processing Issues</>}
+                    description={
+                        <AntdList // AntdList 사용 시 import 필요
+                            size="small"
+                            dataSource={processingErrors}
+                            renderItem={item => <AntdList.Item style={{padding: '4px 0', color: 'var(--antd-colorErrorText)'}}>{item}</AntdList.Item>}
+                        />
+                    }
+                    type="error"
+                    showIcon
+                    style={{ marginBottom: 24 }}
+                 />
+            )}
+
             <Divider>Analyzed Classes</Divider>
 
             {filteredClasses.length === 0 && searchTerm && classes && classes.length > 0 && (
-                 <Empty description={<>No classes found matching "<strong>{searchTerm}</strong>". Try a different search term or clear the filter.</>} style={{marginTop: 30}}/>
+                 <Empty description={<>No classes found matching "<strong>{searchTerm}</strong>".</>} style={{marginTop: 30}}/>
             )}
-            {/* [수정] no-mixed-operators 방지를 위한 괄호 및 조건 명확화 */}
             {filteredClasses.length === 0 && !searchTerm && (!classes || classes.length === 0) && (!processingErrors || processingErrors.length === 0) && (
                  <Empty description="No class information was processed or found." style={{marginTop: 30}}/>
             )}
 
-
-            {viewMode === 'Cards' && (
-                <Row gutter={[24, 24]}>
-                    {filteredClasses.map((classData) => ( // filteredClasses가 null이 아님을 보장
-                        <Col xs={24} md={12} xl={8} key={classData.className}>
-                            <ClassCard classData={classData} />
-                        </Col>
-                    ))}
-                </Row>
-            )}
+            {/* [수정] Row에 align="stretch" 추가, Col에 style={{ display: 'flex' }} 추가 */}
+            <Row gutter={[24, 24]} align="stretch">
+                {filteredClasses.map((classData) => (
+                    // 각 Col이 flex 아이템이 되어 내부 Card가 높이를 채울 수 있도록 함
+                    <Col xs={24} md={12} xl={8} key={classData.className} style={{ display: 'flex' }}>
+                        {/* ClassCard에 height: '100%' 스타일이 적용되어야 함 (ClassCard.js 또는 CSS에서) */}
+                        <ClassCard classData={classData} />
+                    </Col>
+                ))}
+            </Row>
         </div>
     );
 };

@@ -59,7 +59,7 @@ const PlansPage = () => {
 
     return (
         // 페이지 전체 div는 App.js의 content-inner-wrapper 스타일을 따르므로 별도 배경 지정 X
-        <div style={{ padding: '20px 0' /* 상하 패딩만, 좌우는 content-inner-wrapper에서 */ }}>
+        <div style={{ padding: '10px 0' /* 상하 패딩만, 좌우는 content-inner-wrapper에서 */ }}>
             <Title level={2} style={{ textAlign: 'center', marginBottom: '10px', color: token.colorTextBase }}>
                 Choose Your Plan
             </Title>

@@ -1,139 +1,132 @@
-/* App.css - 전역 및 기본 레이아웃 스타일 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  /* [수정] overflow: hidden; 제거 또는 주석 처리 */
-  /* overflow: hidden; */
+  /* overflow: hidden; // 랜딩 페이지 스크롤을 위해 제거됨 */
 }
 
 body {
-  font-family: var(--antd-fontFamily, "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'");
+  font-family: var(--antd-fontFamily); /* ConfigProvider에서 설정한 폰트 사용 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--antd-colorBgBase, #111827);
-  color: var(--antd-colorTextBase, #e5e7eb);
+  background-color: var(--antd-colorBgLayout); /* ConfigProvider에서 설정한 레이아웃 배경 */
+  color: var(--antd-colorText); /* ConfigProvider에서 설정한 기본 텍스트 색상 */
 }
 
 /* Sider 로고 컨테이너 */
+.sider-logo-link {
+  display: block; /* 링크 영역 전체 클릭 가능하도록 */
+  text-decoration: none;
+}
 .logo-container {
   height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 8px; /* 메뉴와의 간격 */
   overflow: hidden;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
 .logo-container:hover {
-  background-color: var(--antd-colorBgElevated, #2a3142) !important;
+  background-color: var(--antd-colorBgElevated) !important;
 }
 
 /* Sider 메뉴 아이템 */
 .ant-layout-sider .ant-menu-inline.ant-menu-dark {
-  background: transparent;
+  background: transparent !important; /* Sider 배경을 따르도록 */
 }
-.ant-layout-sider .ant-menu-inline .ant-menu-item,
-.ant-layout-sider .ant-menu-inline .ant-menu-submenu-title {
-    margin: 4px 8px;
-    width: calc(100% - 16px);
-    height: 42px;
-    line-height: 42px;
-    font-size: 0.95rem;
-    border-radius: var(--antd-borderRadiusSM, 4px);
+.ant-layout-sider .ant-menu-item, /* ConfigProvider에서 대부분 제어 */
+.ant-layout-sider .ant-menu-submenu-title {
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+  border-radius: var(--antd-borderRadiusSM) !important;
+}
+.ant-layout-sider .ant-menu-item .anticon,
+.ant-layout-sider .ant-menu-submenu-title .anticon {
+  font-size: 1.05rem; /* 아이콘 크기 미세 조정 */
 }
 
 /* 내부 페이지 Header */
 .app-header.ant-layout-header {
   height: 64px;
   line-height: 64px;
+  padding: 0 16px !important; /* 패딩 명시 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.app-header .sider-toggle-button.ant-btn-text { /* Sider 토글 버튼 */
+  font-size: 18px !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 10px !important;
+  color: var(--antd-colorPrimaryText) !important; /* ConfigProvider 토큰 사용 */
+}
+.app-header .sider-toggle-button.ant-btn-text:hover {
+  background: var(--antd-colorBgTextHover) !important; /* ConfigProvider 토큰 사용 */
 }
 
-/* Header의 Breadcrumb */
-.app-header .ant-breadcrumb .ant-breadcrumb-link a,
-.app-header .ant-breadcrumb .ant-breadcrumb-link > span {
-  color: var(--antd-colorTextSecondary) !important;
-  transition: color 0.2s;
+
+/* Header의 Breadcrumb (ConfigProvider에서 대부분 제어) */
+.app-header .ant-breadcrumb {
+  margin-left: 16px;
 }
-.app-header .ant-breadcrumb .ant-breadcrumb-link a:hover {
-  color: var(--antd-colorPrimary) !important;
-}
-.app-header .ant-breadcrumb > .ant-breadcrumb-item:last-child .ant-breadcrumb-link,
-.app-header .ant-breadcrumb > .ant-breadcrumb-item:last-child > span {
-  color: var(--antd-colorTextBase) !important;
-  font-weight: 500;
-}
-.app-header .ant-breadcrumb .ant-breadcrumb-separator {
-  color: var(--antd-colorTextTertiary) !important;
-}
+/* .app-header .ant-breadcrumb a { ... } // ConfigProvider에서 제어 */
+/* .app-header .ant-breadcrumb > span:last-child { ... } // ConfigProvider에서 제어 */
+
 
 /* 내부 페이지 Content 영역 */
 .app-content-wrapper { /* App.js의 Content 컴포넌트에 적용된 클래스 */
-  /* App.js에서 padding, flexGrow, overflowY 등으로 제어 */
+  padding: 20px; /* 내부 페이지의 외부 여백 */
 }
 
 .content-inner-wrapper { /* App.js에서 Content 내부 div에 적용된 클래스 */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.08);
+  /* background, color, borderRadius, padding, flexGrow 등 App.js에서 제어 */
+  box-shadow: var(--antd-boxShadowTertiary); /* ConfigProvider 그림자 토큰 사용 */
 }
 
 /* 내부 페이지 Footer */
 .app-footer.ant-layout-footer {
   text-align: center;
-  height: 60px;
+  padding: 16px 50px; /* 패딩 조정 */
+  height: auto; /* 내용에 따라 높이 자동 조절 */
   line-height: normal;
-  padding: 10px 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* FileUploaderPage 특정 스타일 (이전 답변 내용 유지) */
-.file-uploader-page-content {
+/* FileUploaderPage 특정 스타일 (이전 답변 내용과 유사하게 유지하되, 테마 변수 활용) */
+.file-uploader-page-content { /* FileUploaderPage의 최상위 div */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  padding: 20px;
+  padding: 20px; /* 필요시 패딩 조정 */
   width: 100%;
-  /* height: 100%; // 부모가 flex item일 때, 여기서는 flex-grow로 충분할 수 있음 */
 }
 
-.file-uploader-container {
-  max-width: 600px;
+.file-uploader-container { /* 파일 업로드 카드 영역 */
+  max-width: 550px; /* 너비 살짝 줄임 */
   width: 100%;
-  padding: 30px 35px;
-  background-color: var(--antd-colorBgElevated, #2a3142);
-  border-radius: var(--antd-borderRadiusLG, 8px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  padding: 28px 32px; /* 패딩 조정 */
+  background-color: var(--antd-colorBgElevated); /* 테마의 Elevated 배경색 */
+  border-radius: var(--antd-borderRadiusLG);
+  box-shadow: var(--antd-boxShadow); /* 테마의 기본 그림자 */
   text-align: center;
 }
 
 .file-uploader-container .custom-dragger.ant-upload.ant-upload-drag {
-  background: var(--antd-colorBgLayout, #001529) !important;
-  border: 2px dashed var(--antd-colorBorder, #374151) !important;
-  border-radius: var(--antd-borderRadius, 6px);
+  background: var(--antd-colorBgLayout) !important; /* 앱 기본 배경보다 어둡게 */
+  border: 2px dashed var(--antd-colorBorder) !important;
+  border-radius: var(--antd-borderRadius);
   padding: 25px 20px;
   transition: border-color 0.3s;
 }
 .file-uploader-container .custom-dragger.ant-upload.ant-upload-drag:hover {
-  border-color: var(--antd-colorPrimary, #22c55e) !important;
+  border-color: var(--antd-colorPrimary) !important;
 }
-.file-uploader-container .custom-dragger .ant-upload-drag-icon .anticon {
-  color: var(--antd-colorPrimary, #22c55e) !important;
-  font-size: 42px !important;
-}
-.file-uploader-container .custom-dragger .ant-upload-text {
-  color: var(--antd-colorText, #e5e7eb) !important;
-  font-size: 1.1rem;
-  margin-top: 10px;
-  font-weight: 500;
-}
-.file-uploader-container .custom-dragger .ant-upload-hint {
-  color: var(--antd-colorTextSecondary, #9ca3af) !important;
-  font-size: 0.9rem;
-}
+/* ... (Dragger 내부 아이콘, 텍스트 색상은 ConfigProvider가 처리) ... */
 .file-uploader-container .ant-btn-primary {
   margin-top: 24px;
   width: 100%;

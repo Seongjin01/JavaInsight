@@ -1,80 +1,40 @@
 import React, { useState, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Layout, Menu, Breadcrumb, ConfigProvider, theme as antdTheme, Typography, Button } from 'antd';
+import { Layout, Menu, Breadcrumb, ConfigProvider, theme as antdTheme, Typography, Button, App as AntdApp } from 'antd';
 import {
     HomeOutlined,
     UploadOutlined,
     BarChartOutlined,
     DollarCircleOutlined,
     QuestionCircleOutlined,
-    CodeSandboxOutlined, // 로고 아이콘
+    CodeSandboxOutlined,
     GithubOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
 
-// 페이지 컴포넌트 임포트
 import LandingPage from './pages/LandingPage';
 import FileUploaderPage from './pages/FileUploaderPage';
 import ResultsPage from './pages/ResultsPage';
 import PlansPage from './pages/PlansPage';
 import FaqPage from './pages/FaqPage';
 
-// CSS 파일 임포트
 import './App.css';
-import './pages/LandingPage.css';
-import './components/home/HeroSection.css';
-import './components/home/SectionStyles.css';
+// 페이지별/컴포넌트별 CSS는 해당 JS 파일 내에서 임포트 권장
+// 예: import './pages/LandingPage.css'; // LandingPage.js 내부에서
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
 
-const App = () => {
+const MainAppContent = () => {
     const [analysisResult, setAnalysisResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [collapsed, setCollapsed] = useState(false);
-
     const location = useLocation();
-
-    const customTheme = {
-        token: {
-            colorPrimary: '#22c55e',
-            colorLink: '#22c55e',
-            colorLinkHover: '#16a34a',
-            colorBgBase: '#111827',
-            colorTextBase: '#e5e7eb',
-            colorTextSecondary: '#9ca3af',
-            colorTextTertiary: '#6b7280',
-            colorBorder: '#374151',
-            colorBgContainer: '#1f2937',
-            colorBgElevated: '#2a3142',
-            borderRadius: 6,
-            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
-        },
-        algorithm: antdTheme.darkAlgorithm,
-        components: {
-            Menu: {
-                itemBg: 'transparent',
-                itemColor: '#9ca3af',
-                itemHoverColor: '#22c55e',
-                itemSelectedColor: '#22c55e',
-                itemSelectedBg: 'rgba(34, 197, 94, 0.15)',
-                itemHoverBg: 'rgba(34, 197, 94, 0.1)',
-            },
-            Breadcrumb: {
-                itemColor: '#9ca3af',
-                lastItemColor: '#e5e7eb',
-                linkColor: '#9ca3af',
-                linkHoverColor: '#22c55e',
-                separatorColor: '#6b7280',
-            }
-        }
-    };
-    const { token } = customTheme;
+    const { token } = antdTheme.useToken(); // ConfigProvider 내부이므로 정상
 
     const menuItems = useMemo(() => [
-        { key: '/', icon: <HomeOutlined />, label: <Link to="/">Landing Home</Link> },
         { key: '/analyzer', icon: <UploadOutlined />, label: <Link to="/analyzer">Analyze Project</Link> },
         { key: '/results', icon: <BarChartOutlined />, label: <Link to="/results">View Results</Link> },
         { key: '/plans', icon: <DollarCircleOutlined />, label: <Link to="/plans">Pricing Plans</Link> },
@@ -83,21 +43,24 @@ const App = () => {
 
     const currentSelectedKeys = useMemo(() => {
         let currentPathKey = location.pathname;
-        const matchedItem = [...menuItems].reverse().find(item => currentPathKey.startsWith(item.key));
-        return matchedItem ? [matchedItem.key] : [currentPathKey];
+        const matchedItem = [...menuItems].reverse().find(item => currentPathKey.startsWith(item.key) && item.key !== '/'); // Landing Home 제외
+        if (matchedItem) {
+            return [matchedItem.key];
+        }
+        // 랜딩 페이지('/')의 경우 Sider 메뉴에 해당 항목이 없으므로, 아무것도 선택되지 않도록 하거나
+        // 또는 '/analyzer'를 기본으로 선택할 수 있음. 여기서는 선택 안 함.
+        return location.pathname === '/' ? [] : [currentPathKey];
     }, [location.pathname, menuItems]);
 
     const breadcrumbItems = useMemo(() => {
         const pathSnippets = location.pathname.split('/').filter(i => i);
         const items = [{ key: 'home-breadcrumb', title: <Link to="/">Home</Link> }];
-
         let accumulatedPath = '';
         pathSnippets.forEach((snippet, index) => {
             accumulatedPath += `/${snippet}`;
             const menuItem = menuItems.find(m => m.key === accumulatedPath);
             const displayName = menuItem ? (React.isValidElement(menuItem.label) ? menuItem.label.props.children : menuItem.label)
                                       : (snippet.charAt(0).toUpperCase() + snippet.slice(1));
-
             if (index === pathSnippets.length - 1) {
                 items.push({ title: displayName, key: accumulatedPath });
             } else if (menuItem) {
@@ -106,16 +69,13 @@ const App = () => {
                 items.push({ title: displayName, key: accumulatedPath });
             }
         });
-        return location.pathname === '/' ? [items[0]] : items;
+        return location.pathname === '/' ? [] : items; // 랜딩페이지는 Breadcrumb 숨김
     }, [location.pathname, menuItems]);
 
     const isLandingPage = location.pathname === '/';
 
-    const AppLayout = (
-        // [수정] 최상위 Layout: flexDirection을 isLandingPage에 따라 동적으로 변경하지 않고, 항상 row로 하되,
-        // LandingPage 컴포넌트 자체가 Layout을 포함하도록 변경할 수 있습니다.
-        // 여기서는 일단 이전 구조를 유지하되, Content의 overflow를 조절합니다.
-        <Layout style={{ display: 'flex', flexDirection: isLandingPage ? 'column' : 'row', minHeight: '100vh', background: token.colorBgBase }}>
+    return (
+        <Layout style={{ display: 'flex', flexDirection: isLandingPage ? 'column' : 'row', minHeight: '100vh', background: token.colorBgLayout }}>
             {!isLandingPage && (
                 <Sider
                     collapsible
@@ -123,52 +83,48 @@ const App = () => {
                     onCollapse={setCollapsed}
                     trigger={null}
                     width={230}
-                    style={{ background: token.colorBgContainer, display: 'flex', flexDirection: 'column' }}
+                    style={{ background: token.siderBg, display: 'flex', flexDirection: 'column', borderRight: `1px solid ${token.colorBorder}` }}
                 >
                     <Link to="/" className="sider-logo-link">
-                        <div className="logo-container" style={{ background: token.colorBgBase }}>
-                            <CodeSandboxOutlined style={{ fontSize: '30px', color: token.colorPrimary, transition: 'all 0.3s' }} />
+                        <div className="logo-container" style={{ background: token.headerBg /* Sider 상단 로고 배경 */ }}>
+                            <CodeSandboxOutlined style={{ fontSize: '28px', color: token.colorPrimary }} />
                             {!collapsed && (
-                                <Title level={4} style={{ margin: '0 0 0 12px', color: token.colorTextBase, whiteSpace: 'nowrap' }}>
+                                <Title level={4} style={{ margin: '0 0 0 10px', color: token.colorTextHeading, whiteSpace: 'nowrap' }}>
                                     JavaInsight
                                 </Title>
                             )}
                         </div>
                     </Link>
                     <Menu
-                        theme="dark"
+                        theme="dark" // 'dark' algorithm과 Menu 컴포넌트 토큰을 따름
                         selectedKeys={currentSelectedKeys}
                         mode="inline"
-                        items={menuItems.filter(item => item.key !== '/')}
-                        style={{ background: 'transparent', borderRight: 0, flexGrow: 1 }}
+                        items={menuItems}
+                        style={{ background: 'transparent', borderRight: 0, flexGrow: 1, padding: '8px 0' }}
                     />
                 </Sider>
             )}
-            <Layout className="site-content-layout" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', background: token.colorBgBase }}>
+            <Layout className="site-content-layout" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', background: token.colorBgLayout }}>
                 {!isLandingPage && (
                     <Header
                         className="app-header"
                         style={{
-                            background: token.colorBgContainer,
+                            background: token.headerBg,
                             borderBottom: `1px solid ${token.colorBorder}`,
-                            padding: '0 16px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexShrink: 0,
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <Button
                                 type="text"
-                                icon={collapsed ? <MenuUnfoldOutlined style={{color: token.colorPrimary}} /> : <MenuFoldOutlined style={{color: token.colorPrimary}} />}
+                                icon={collapsed ? <MenuUnfoldOutlined style={{color: token.colorPrimaryText}} /> : <MenuFoldOutlined style={{color: token.colorPrimaryText}} />}
                                 onClick={() => setCollapsed(!collapsed)}
-                                style={{ fontSize: '18px', width: 'auto', height: 'auto', padding: '10px' }}
+                                className="sider-toggle-button"
+                                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
                             />
                             <Breadcrumb style={{ marginLeft: '16px' }} items={breadcrumbItems} />
                         </div>
                         <a href="https://github.com/YOUR_USERNAME/YOUR_REPO" target="_blank" rel="noopener noreferrer" title="GitHub Repository">
-                            <GithubOutlined style={{ fontSize: '24px', color: token.colorTextSecondary, verticalAlign: 'middle' }} />
+                            <GithubOutlined style={{ fontSize: '22px', color: token.colorTextSecondary, verticalAlign: 'middle' }} />
                         </a>
                     </Header>
                 )}
@@ -176,48 +132,31 @@ const App = () => {
                     className={isLandingPage ? "landing-page-content-wrapper" : "app-content-wrapper"}
                     style={{
                         flexGrow: 1,
-                        // [수정] isLandingPage일 때는 overflowY를 설정하지 않거나 'visible'로 하여 브라우저 기본 스크롤 허용
-                        // 내부 페이지일 때는 'auto'로 설정하여 내용이 넘칠 때만 Content 영역 내에서 스크롤
                         overflowY: isLandingPage ? 'visible' : 'auto',
-                        padding: isLandingPage ? 0 : '16px', // 랜딩 페이지는 자체 패딩, 내부 페이지는 외부 여백
-                        background: token.colorBgBase,
-                        display: 'flex',
-                        flexDirection: 'column',
+                        padding: isLandingPage ? 0 : '20px', // 내부 페이지 외부 여백
+                        background: token.colorBgLayout,
+                        display: 'flex', flexDirection: 'column',
                     }}
                 >
                     <div
                         className={isLandingPage ? "" : "content-inner-wrapper"}
                         style={isLandingPage ?
-                            // 랜딩 페이지의 경우, 이 div는 공간만 차지하고 실제 스크롤은 LandingPage.js 내부의 Layout에서 담당
                             { flexGrow: 1, display: 'flex', flexDirection: 'column' } :
-                            { // 내부 페이지의 실제 컨텐츠 영역
-                                background: token.colorBgContainer,
-                                color: token.colorTextBase,
-                                borderRadius: token.borderRadius,
-                                padding: 24,
-                                flexGrow: 1, // 부모 Content 영역 내에서 가능한 공간을 채우도록
-                                display: 'flex',
-                                flexDirection: 'column',
-                                // overflowY: 'auto', // 스크롤은 이제 부모인 Content에서 관리
+                            {
+                                background: token.colorBgContainer, // 내부 페이지 콘텐츠 영역 배경
+                                color: token.colorText,
+                                borderRadius: token.borderRadiusLG,
+                                padding: '24px', // 내부 페이지 콘텐츠 패딩
+                                flexGrow: 1,
+                                display: 'flex', flexDirection: 'column',
+                                boxShadow: token.boxShadowTertiary, // 은은한 그림자
                             }
                         }
                     >
                         <Routes>
                             <Route path="/" element={<LandingPage />} />
-                            <Route path="/analyzer" element={
-                                <FileUploaderPage
-                                    setAnalysisResult={setAnalysisResult}
-                                    setIsLoading={setIsLoading}
-                                    setError={setError}
-                                />}
-                            />
-                            <Route path="/results" element={
-                                <ResultsPage
-                                    analysisResult={analysisResult}
-                                    isLoading={isLoading}
-                                    error={error}
-                                />}
-                            />
+                            <Route path="/analyzer" element={<FileUploaderPage setAnalysisResult={setAnalysisResult} setIsLoading={setIsLoading} setError={setError} />} />
+                            <Route path="/results" element={<ResultsPage analysisResult={analysisResult} isLoading={isLoading} error={error} />} />
                             <Route path="/plans" element={<PlansPage />} />
                             <Route path="/faq" element={<FaqPage />} />
                         </Routes>
@@ -227,12 +166,8 @@ const App = () => {
                     <Footer
                         className="app-footer"
                         style={{
-                            background: token.colorBgBase,
-                            color: token.colorTextTertiary,
-                            borderTop: `1px solid ${token.colorBorder}`,
-                            flexShrink: 0,
-                            textAlign: 'center',
-                            padding: '18px 50px'
+                            background: token.colorBgLayout, color: token.colorTextDescription,
+                            borderTop: `1px solid ${token.colorBorderBg}`, flexShrink: 0,
                         }}
                     >
                         Java Insight Analyzer ©{new Date().getFullYear()}
@@ -241,18 +176,105 @@ const App = () => {
             </Layout>
         </Layout>
     );
-
-    return (
-        <ConfigProvider theme={customTheme}>
-            {AppLayout}
-        </ConfigProvider>
-    );
 };
 
-const AppWrapper = () => (
-    <Router>
-        <App />
-    </Router>
-);
+const AppWrapper = () => {
+    // 새로운 색상 팔레트 정의 (좀 더 밝은 느낌의 다크 테마)
+    const colorPrimary = '#4ADE80'; // 밝고 선명한 초록색 (Tailwind Green 400)
+    const colorPrimaryHover = '#34D399'; // (Tailwind Green 500)
+    const colorPrimaryActive = '#10B981'; // (Tailwind Green 600)
+
+    const colorBgLayout = '#1E293B';      // 레이아웃 기본 배경 (Tailwind Slate 800)
+    const colorBgContainer = '#334155';   // 카드, Sider, Header 등 컨테이너 배경 (Tailwind Slate 700)
+    const colorBgElevated = '#475569';  // 드롭다운, 툴팁, 호버 배경 등 (Tailwind Slate 600)
+
+    const colorTextHeading = '#F1F5F9';      // 제목용 텍스트 (Tailwind Slate 100)
+    const colorText = '#E2E8F0';          // 본문 기본 텍스트 (Tailwind Slate 200)
+    const colorTextSecondary = '#94A3B8'; // 보조 텍스트 (Tailwind Slate 400)
+    const colorTextDescription = '#64748B';// 설명, placeholder 등 (Tailwind Slate 500)
+
+    const colorBorder = '#475569';        // 일반 경계선 (Tailwind Slate 600)
+    const colorBorderBg = '#334155';      // 배경 위의 경계선 (Tailwind Slate 700)
+    const colorSplit = colorBorder;
+
+    const customTheme = {
+        token: {
+            colorPrimary: colorPrimary,
+            colorPrimaryHover: colorPrimaryHover,
+            colorPrimaryActive: colorPrimaryActive,
+            colorLink: colorPrimary,
+            colorLinkHover: colorPrimaryHover,
+            colorSuccess: colorPrimary,
+            colorWarning: '#F59E0B', // Amber 500
+            colorError: '#EF4444',   // Red 500
+            colorInfo: '#3B82F6',    // Blue 500
+
+            colorBgBase: colorBgLayout, // AntD의 colorBgBase는 보통 가장 바닥 레이어
+            colorTextBase: colorText,   // AntD의 colorTextBase는 일반 텍스트
+            colorText: colorText,
+            colorTextHeading: colorTextHeading,
+            colorTextSecondary: colorTextSecondary,
+            colorTextTertiary: colorTextDescription, // AntD의 colorTextTertiary는 더 연함
+            colorTextQuaternary: '#475569', // 더더 연함
+
+            colorBorder: colorBorder,
+            colorBorderSecondary: colorBorderBg, // 카드 등의 테두리
+            colorSplit: colorSplit,
+
+            colorBgContainer: colorBgContainer, // 카드, 모달, 팝오버 등
+            colorBgElevated: colorBgElevated,   // 드롭다운, 툴팁
+            colorBgLayout: colorBgLayout,       // Layout 컴포넌트 배경
+
+            borderRadius: 6,
+            borderRadiusLG: 8,
+            borderRadiusSM: 4,
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif",
+            fontSize: 14,
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02)', // 기본 그림자
+            boxShadowSecondary: '0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)', // 카드 호버 등
+            boxShadowTertiary: '0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 6px 0 rgba(0, 0, 0, 0.04), 0 2px 4px 0 rgba(0, 0, 0, 0.04)', // 약한 그림자
+        },
+        algorithm: antdTheme.darkAlgorithm,
+        components: {
+            Layout: {
+                siderBg: colorBgContainer,
+                headerBg: colorBgContainer,
+                bodyBg: colorBgLayout,
+                footerBg: colorBgLayout,
+                triggerBg: colorBgElevated,
+                triggerColor: colorTextSecondary,
+            },
+            Menu: {
+                itemBg: 'transparent',
+                itemColor: colorTextSecondary,
+                itemHoverColor: colorPrimary,
+                itemSelectedColor: colorPrimary,
+                itemSelectedBg: `${colorPrimary}20`, // alpha 0.12
+                itemHoverBg: `${colorPrimary}1A`,    // alpha 0.1
+                popupBg: colorBgElevated, // 드롭다운 메뉴 배경
+            },
+            Button: { /* ... (이전과 유사하게, 새로운 색상 토큰 사용) ... */ },
+            Card: {
+                colorBgContainer: colorBgContainer,
+                colorBorderSecondary: colorBorderBg, // 카드 테두리
+                actionsBg: colorBgElevated, // 카드 액션 영역 배경
+            },
+            Breadcrumb: { /* ... (이전과 유사하게, 새로운 색상 토큰 사용) ... */ },
+            Spin: { colorTextDescription: colorTextSecondary, },
+            Upload: { colorFillAlter: colorBgLayout, colorBorder: colorBorder, },
+            Input: { /* ... */ }, Table: { /* ... */ }, Collapse: { /* ... */ }, Tag: { /* ... */ }
+        }
+    };
+
+    return (
+        <Router>
+            <ConfigProvider theme={customTheme}>
+                <AntdApp> {/* message, notification 컨텍스트 제공 */}
+                    <MainAppContent />
+                </AntdApp>
+            </ConfigProvider>
+        </Router>
+    );
+};
 
 export default AppWrapper;
